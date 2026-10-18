@@ -1,6 +1,5 @@
+.vs/
 **/bin/
 **/obj/
 **/TestResults/
-.vs/
-.idea/
-coverage-report/
+*.user
