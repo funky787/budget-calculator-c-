@@ -1,64 +1,47 @@
-# Калькулятор бюджета (C#)
+# Калькулятор бюджета на C#
 
-Простой REST API для подсчёта бюджета. Пользователь передаёт стоимость дня, количество дней и указывает, нужна ли страховка. Страховка добавляет 5% к итоговой сумме.
+Простой REST API для расчёта бюджета на несколько дней. Можно указать стоимость дня, количество дней и добавить страховку 5%.
 
-## Стек
+Проект сделан на ASP.NET Core, тесты написал на xUnit.
+
+## Что использовал
 
 - C# / .NET 8
-- ASP.NET Core Web API
-- xUnit для тестирования
-- Coverlet для покрытия кода
+- ASP.NET Core
+- xUnit
+- Coverlet
 
-## Запуск тестов
+## Тестирование
 
-Открыть `BudgetCalculatorCSharp.sln` в Visual Studio 2022 или Rider. Нужен .NET 8 SDK.
+Написал 6 тестов:
 
-В терминале из корня проекта:
+1. Расчёт без страховки.
+2. Расчёт со страховкой.
+3. Отрицательное количество дней.
+4. Нулевая стоимость дня.
+5. Расчёт дробных сумм.
+6. Нулевое количество дней.
 
-```powershell
-dotnet restore
+В исходном примере страховка рассчитывалась неправильно. Вместо умножения суммы на 5 исправил на 1.05m, чтобы добавлялось 5%.
+
+## Как запустить
+
+Открыть `BudgetCalculatorCSharp.sln` в Visual Studio.
+
+Запуск тестов:
+
+```bash
 dotnet test
 ```
 
-Тестов шесть: обычный расчёт (500), расчёт со страховкой (525), отрицательное число дней (400), нулевая цена (0), дробная цена (301,50) и ноль дней (400).
+Проверка покрытия:
 
-## Покрытие кода
-
-```powershell
+```bash
 dotnet test --collect:"XPlat Code Coverage"
 ```
 
-XML-отчёт Cobertura появится в `BudgetCalculator.Tests/TestResults/<идентификатор>/coverage.cobertura.xml`.
+Результат сохраняется в папке `TestResults`.
 
-Чтобы сделать HTML-отчёт, можно дополнительно установить ReportGenerator:
+## Результат
 
-```powershell
-dotnet tool install --global dotnet-reportgenerator-globaltool
-reportgenerator -reports:"BudgetCalculator.Tests/TestResults/**/coverage.cobertura.xml" -targetdir:"coverage-report" -reporttypes:Html
-```
-
-Открыть `coverage-report/index.html`. Проверять нужно покрытие веток метода `Calculate`.
-
-## Пример запроса
-
-Запустить сервер:
-
-```powershell
-dotnet run --project BudgetCalculator.Api
-```
-
-POST `/api/budget/calculate`:
-
-```json
-{
-  "dailyCost": 100,
-  "days": 5,
-  "includeInsurance": true
-}
-```
-
-Ожидаемый ответ: `200 OK`, `{"totalAmount":525}`.
-
-## Найденная ошибка
-
-В исходном задании страховка считалась как `total *= 5`, то есть увеличивала сумму в пять раз. Правильный вариант — `total *= 1.05m`. Тест `Calculate_WithInsurance_AddsFivePercent` проверяет это. Для демонстрации поиска бага можно временно заменить `1.05m` на `5m`: тест со страховкой должен упасть. После возврата `1.05m` он проходит.
+Все 6 тестов проходят успешно. Покрытие веток — 100%.
