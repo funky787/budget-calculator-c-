@@ -43,7 +43,7 @@ dotnet test --collect:"XPlat Code Coverage"
 Результат сохраняется в папке `TestResults`.
 
 
-## Скриншоты
+## Скрины
 
 ### Тесты
 
